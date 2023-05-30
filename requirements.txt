@@ -4,3 +4,4 @@ langchain
 googlesearch-python
 baidusearch
 duckduckgo_search
+python-docx
