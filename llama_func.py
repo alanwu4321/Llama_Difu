@@ -1,6 +1,6 @@
 import os
 from llama_index import (
-    GPTSimpleVectorIndex,
+    GPTVectorStoreIndex,
     GPTTreeIndex,
     GPTKeywordTableIndex,
     GPTListIndex,
@@ -93,11 +93,11 @@ def construct_index(
     documents = get_documents(file_src)
 
     try:
-        if index_type == "GPTSimpleVectorIndex":
-            index = GPTSimpleVectorIndex(
+        if index_type == "GPTVectorStoreIndex":
+            index = GPTVectorStoreIndex(
                 documents, llm_predictor=llm_predictor, prompt_helper=prompt_helper
             )
-            index_name += "_GPTSimpleVectorIndex"
+            index_name += "_GPTVectorStoreIndex"
         elif index_type == "GPTTreeIndex":
             index = GPTTreeIndex(
                 documents,
@@ -219,9 +219,9 @@ def ask_ai(
         qa_prompt = QuestionAnswerPrompt(prompt_tmpl)
         response = index.query(question, llm_predictor=llm_predictor)
     else:
-        # if "GPTSimpleVectorIndex" in index_select or not specified
-        logging.debug("Using GPTSimpleVectorIndex")
-        index = GPTSimpleVectorIndex.load_from_disk(index_path)
+        # if "GPTVectorStoreIndex" in index_select or not specified
+        logging.debug("Using GPTVectorStoreIndex")
+        index = GPTVectorStoreIndex.load_from_disk(index_path)
         qa_prompt = QuestionAnswerPrompt(prompt_tmpl)
         rf_prompt = RefinePrompt(refine_tmpl)
         response = index.query(
@@ -297,6 +297,6 @@ def search_construct(api_key, question, search_mode, index_select):
     print("Extracting data from links...")
     print("\n".join(links))
     search_index_name = " ".join(search_terms.split(","))
-    construct_index(api_key, links, search_index_name, "GPTSimpleVectorIndex")
+    construct_index(api_key, links, search_index_name, "GPTVectorStoreIndex")
     print(f"Index {search_index_name} constructed.")
-    return search_index_name + "_GPTSimpleVectorIndex"
+    return search_index_name + "_GPTVectorStoreIndex"

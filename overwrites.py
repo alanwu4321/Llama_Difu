@@ -9,7 +9,7 @@ from llama_index import (
     LLMPredictor,
     GPTTreeIndex,
     Document,
-    GPTSimpleVectorIndex,
+    GPTVectorStoreIndex,
     SimpleDirectoryReader,
     RefinePrompt,
     QuestionAnswerPrompt,
