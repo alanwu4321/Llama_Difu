@@ -10,14 +10,14 @@ from overwrites import *
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 logging.getLogger().addHandler(logging.StreamHandler(stream=sys.stdout))
 
-if os.path.exists("args.json"):
-    with open("args.json", "r") as f:
+if os.path.exists("/etc/secrets/args.json"):
+    with open("/etc/secrets/args.json", "r") as f:
         args = json.load(f)
 else:
     args = {}
     args["api-key"] = ""
     args["host"] = "127.0.0.1"
-    args["port"] = 7860
+    args["port"] = 80
     args["share"] = False
 
 PromptHelper.compact_text_chunks = compact_text_chunks
