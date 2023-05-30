@@ -12,6 +12,7 @@ logging.getLogger().addHandler(logging.StreamHandler(stream=sys.stdout))
 
 if os.path.exists("/etc/secrets/args.json"):
     with open("/etc/secrets/args.json", "r") as f:
+        print(f)
         args = json.load(f)
 else:
     args = {}
@@ -110,5 +111,5 @@ with gr.Blocks() as demo:
 
 if __name__ == "__main__":
     demo.title = "Llama Do it for You!"
-    # demo.queue().launch(server_name=args["host"], server_port=args["port"], share=args["share"])
-    demo.queue().launch()
+    demo.queue().launch(server_name=args["host"], server_port=args["port"], share=args["share"])
+    # demo.queue().launch()
