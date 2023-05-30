@@ -5,3 +5,7 @@ googlesearch-python
 baidusearch
 duckduckgo_search
 python-docx
+ipython
+typing
+tqdm
+re
