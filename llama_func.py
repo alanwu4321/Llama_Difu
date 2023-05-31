@@ -16,6 +16,7 @@ from llama_index import (
     RefinePrompt,
 )
 from llama_index.logger import LlamaLogger
+from llama_index import StorageContext, load_index_from_storage
 
 # from langchain.llms import OpenAIChat, OpenAI
 from googlesearch import search as google_search
@@ -228,9 +229,9 @@ def ask_ai(
     else:
         # if "GPTVectorStoreIndex" in index_select or not specified
         # rebuild storage context
-        storage_context = StorageContext.from_defaults(persist_dir=index_path, index_name=index_select)
+        storage_context = StorageContext.from_defaults(persist_dir=index_path)
         # load index
-        index = load_index_from_storage(storage_context)
+        index = load_index_from_storage(storage_context, index_id=index_select)
         
         logging.debug("Using GPTVectorStoreIndex")
         index = GPTVectorStoreIndex.load_from_disk(index_path)
