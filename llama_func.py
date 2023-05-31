@@ -5,6 +5,7 @@ from llama_index import (
     GPTKeywordTableIndex,
     GPTListIndex,
 )
+from langchain.chat_models import ChatOpenAI
 from llama_index import SimpleDirectoryReader, download_loader
 from llama_index import (
     Document,
@@ -13,7 +14,7 @@ from llama_index import (
     QuestionAnswerPrompt,
     RefinePrompt,
 )
-from langchain.llms import OpenAIChat, OpenAI
+# from langchain.llms import OpenAIChat, OpenAI
 from googlesearch import search as google_search
 from baidusearch.baidusearch import search as baidu_search
 from duckduckgo_search import ddg
@@ -80,7 +81,7 @@ def construct_index(
     separator = " " if separator == "" else separator
 
     llm_predictor = LLMPredictor(
-        llm=OpenAI(model_name="gpt-3.5-turbo-0301", openai_api_key=api_key)
+        llm=ChatOpenAI(model_name="gpt-3.5-turbo-0301", openai_api_key=api_key)
     )
     prompt_helper = PromptHelper(
         max_input_size,
@@ -197,7 +198,7 @@ def ask_ai(
     logging.debug("Index file found")
     logging.debug("Querying index...")
     llm_predictor = LLMPredictor(
-        llm=OpenAI(
+        llm=ChatOpenAI(
             temperature=temprature,
             model_name="gpt-3.5-turbo-0301",
             prefix_messages=prefix_messages,
@@ -251,7 +252,7 @@ def ask_ai(
 
 def search_construct(api_key, question, search_mode, index_select):
     print(f"You asked: {question}")
-    chat = OpenAI(model_name="gpt-3.5-turbo-0301", openai_api_key=api_key)
+    chat = ChatOpenAI(model_name="gpt-3.5-turbo-0301", openai_api_key=api_key)
     search_terms = (
         chat.generate(
             [
