@@ -233,11 +233,13 @@ def ask_ai(
         # load index
         index = load_index_from_storage(storage_context, index_id=index_select)
         
+        # create query engine
+        query_engine = index.as_query_engine()
+        
         logging.debug("Using GPTVectorStoreIndex")
-        index = GPTVectorStoreIndex.load_from_disk(index_path)
         qa_prompt = QuestionAnswerPrompt(prompt_tmpl)
         rf_prompt = RefinePrompt(refine_tmpl)
-        response = index.query(
+        response = query_engine.query(
             question,
             llm_predictor=llm_predictor,
             similarity_top_k=sim_k,
