@@ -87,6 +87,7 @@ def construct_index(
     llm_predictor = LLMPredictor(
         llm=ChatOpenAI(model_name="gpt-3.5-turbo-0301", openai_api_key=api_key)
     )
+    
     prompt_helper = PromptHelper(
         max_input_size,
         num_outputs,
@@ -231,21 +232,30 @@ def ask_ai(
         # rebuild storage context
         storage_context = StorageContext.from_defaults(persist_dir=index_path)
         # load index
-        index = load_index_from_storage(storage_context, index_id=index_select)
         
-        # create query engine
-        query_engine = index.as_query_engine()
+        llm_predictor = LLMPredictor(
+            llm=ChatOpenAI(model_name="gpt-3.5-turbo-0301", openai_api_key=api_key)
+        )
         
+        
+        llama_logger = LlamaLogger()
+        service_context = ServiceContext.from_defaults(llama_logger=llama_logger, llm_predictor=llm_predictor)
+        index = load_index_from_storage(storage_context, index_id=index_select, service_context=service_context)
         logging.debug("Using GPTVectorStoreIndex")
         qa_prompt = QuestionAnswerPrompt(prompt_tmpl)
         rf_prompt = RefinePrompt(refine_tmpl)
-        response = query_engine.query(
-            question,
+        # create query engine
+        query_engine = index.as_query_engine(
             llm_predictor=llm_predictor,
             similarity_top_k=sim_k,
             text_qa_template=qa_prompt,
             refine_template=rf_prompt,
             response_mode="compact"
+        )
+        
+
+        response = query_engine.query(
+            question
         )
 
     if response is not None:
