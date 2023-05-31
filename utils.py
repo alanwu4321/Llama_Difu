@@ -8,14 +8,14 @@ def save_index(index, index_name, exist_ok=False):
     file_path = f"./index/{index_name}.json"
 
     if not os.path.exists(file_path) or exist_ok:
-        index.save_to_disk(file_path)
+        index.storage_context.persist(file_path, index_name=index_name)
         print(f'Saved file "{file_path}".')
     else:
         i = 1
         while True:
             new_file_path = f'{os.path.splitext(file_path)[0]}_{i}{os.path.splitext(file_path)[1]}'
             if not os.path.exists(new_file_path):
-                index.save_to_disk(new_file_path)
+                index.storage_context.persist(new_file_path, index_name=index_name)
                 print(f'Saved file "{new_file_path}".')
                 break
             i += 1

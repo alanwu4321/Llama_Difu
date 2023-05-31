@@ -227,6 +227,11 @@ def ask_ai(
         response = index.query(question, llm_predictor=llm_predictor)
     else:
         # if "GPTVectorStoreIndex" in index_select or not specified
+        # rebuild storage context
+        storage_context = StorageContext.from_defaults(persist_dir=index_path, index_name=index_select)
+        # load index
+        index = load_index_from_storage(storage_context)
+        
         logging.debug("Using GPTVectorStoreIndex")
         index = GPTVectorStoreIndex.load_from_disk(index_path)
         qa_prompt = QuestionAnswerPrompt(prompt_tmpl)
