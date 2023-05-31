@@ -7,6 +7,7 @@ from llama_index import (
 )
 from langchain.chat_models import ChatOpenAI
 from llama_index import SimpleDirectoryReader, download_loader
+from llama_index import ServiceContext
 from llama_index import (
     Document,
     LLMPredictor,
@@ -14,6 +15,8 @@ from llama_index import (
     QuestionAnswerPrompt,
     RefinePrompt,
 )
+from llama_index.logger import LlamaLogger
+
 # from langchain.llms import OpenAIChat, OpenAI
 from googlesearch import search as google_search
 from baidusearch.baidusearch import search as baidu_search
@@ -91,12 +94,15 @@ def construct_index(
         chunk_size_limit,
         separator=separator,
     )
+    
+    llama_logger = LlamaLogger()
     documents = get_documents(file_src)
+    service_context = ServiceContext.from_defaults(llama_logger=llama_logger, llm_predictor=llm_predictor, prompt_helper=prompt_helper)
 
     try:
         if index_type == "GPTVectorStoreIndex":
-            index = GPTVectorStoreIndex(
-                documents, llm_predictor=llm_predictor, prompt_helper=prompt_helper
+            index = GPTVectorStoreIndex.from_documents(
+                documents, service_context=service_context
             )
             index_name += "_GPTVectorStoreIndex"
         elif index_type == "GPTTreeIndex":
